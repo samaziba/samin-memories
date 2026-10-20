@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#090d18">
+<title>for samin, always ☾</title>
+<style>
+:root{--bg:#080c16;--panel:#101829;--line:#26334d;--text:#eef2ff;--muted:#a3afca;--accent:#c4d2ff}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% 5%,#1a2947 0,transparent 35%),radial-gradient(ellipse at 90% 70%,#172039 0,transparent 30%),var(--bg);color:var(--text);font-family:Tahoma,Arial,sans-serif;min-height:100vh}
+.wrap{max-width:820px;margin:auto;padding:26px 16px 60px}.top{text-align:center;padding:26px 8px 30px}.moon{font-size:48px;color:var(--accent);text-shadow:0 0 26px #9cb4ff55}.eyebrow{font-size:11px;letter-spacing:2px;color:var(--muted);margin:12px 0}h1{font-size:clamp(25px,6vw,38px);margin:8px 0 12px}h2{font-size:18px;margin:0 0 14px}.sub{color:var(--muted);line-height:2;font-size:14px}.panel{border:1px solid var(--line);background:#101829d9;border-radius:22px;padding:20px;margin:14px 0;box-shadow:0 20px 60px #0002}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}.tab,button{border:1px solid var(--line);background:#17233a;color:var(--text);border-radius:13px;padding:10px 13px;font:inherit;cursor:pointer}.tab.active{background:#26385a;border-color:#7288bb}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.entry{border:1px solid var(--line);background:#0b1220;border-radius:17px;padding:16px;overflow-wrap:anywhere}.entry h3{margin:0 0 9px;font-size:16px}.entry p{white-space:pre-wrap;line-height:2;color:#dce4fa;font-size:14px}.entry img,.entry video{max-width:100%;border-radius:12px;margin-top:8px}.entry audio{width:100%;margin-top:8px}.date{color:var(--muted);font-size:11px}.empty{color:var(--muted);line-height:2;text-align:center;padding:18px}.field{display:grid;gap:7px;margin:12px 0}.field label{font-size:13px;color:var(--muted)}input,textarea,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;background:#080f1d;color:var(--text);font:inherit}textarea{min-height:110px;resize:vertical}.actions{display:flex;gap:8px;flex-wrap:wrap}.danger{border-color:#754451;background:#321923}.hidden{display:none!important}.notice{font-size:12px;color:var(--muted);line-height:1.9}.status{font-size:13px;line-height:2;color:var(--accent);margin-top:10px}.foot{text-align:center;color:#8390ad;font-size:12px;margin-top:25px;line-height:2}
+</style>
+</head>
+<body>
+<main class="wrap">
+<header class="top">
+<div class="moon">☾</div><div class="eyebrow">A LITTLE CORNER OF OUR WORLD</div>
+<h1>FOR MY MOON:)</h1>
+<p class="sub">♡برای وقتایی که حالت خوب نیست♡</p>
+</header>
+
+<section class="panel" id="setupNotice">
+<h2>قبل از انتشار</h2>
+<p class="sub">این قالب آماده‌ی اتصال به Supabase است. برای اینکه محتوای جدید روی دستگاه ثمین هم دیده شود، باید پروژه‌ی Supabase را بسازی و تنظیماتش را در این فایل وارد کنی. راهنما داخل فایل ZIP است.</p>
+</section>
+
+<section class="panel">
+<div class="actions" style="justify-content:space-between;align-items:center">
+<h2 style="margin:0">چیزهایی برای تو</h2><button id="loginToggle">ورود مدیریت</button>
+</div>
+<div class="tabs" id="tabs">
+<button class="tab active" data-filter="all">همه</button>
+<button class="tab" data-filter="text">نامه‌ها</button>
+<button class="tab" data-filter="photo">عکس‌ها</button>
+<button class="tab" data-filter="audio">آهنگ و ویس</button>
+<button class="tab" data-filter="video">ویدئوها</button>
+</div>
+<div id="entries" class="grid"><div class="empty">وقتی سایت را به پایگاه داده وصل کنی، محتواهای اینجا نمایش داده می‌شوند. 🌙</div></div>
+<div id="loadStatus" class="status"></div>
+</section>
+
+<section class="panel hidden" id="loginPanel">
+<h2>ورود به پنل مدیریت</h2>
+<p class="notice">این بخش فقط برای مدیر است. حساب مدیر را در Supabase بساز؛ اطلاعات ورود را در کد قرار نده.</p>
+<form id="loginForm">
+<div class="field"><label for="email">ایمیل مدیر</label><input id="email" type="email" required autocomplete="username"></div>
+<div class="field"><label for="password">رمز عبور</label><input id="password" type="password" required autocomplete="current-password"></div>
+<div class="actions"><button type="submit">ورود</button><button type="button" id="logoutBtn" class="hidden">خروج</button></div>
+</form><div id="authStatus" class="status"></div>
+</section>
+
+<section class="panel hidden" id="editorPanel">
+<h2>اضافه‌کردن یادگاری جدید</h2>
+<form id="entryForm">
+<div class="field"><label for="kind">نوع محتوا</label><select id="kind"><option value="text">متن یا نامه</option><option value="photo">عکس و خاطره</option><option value="audio">آهنگ یا ویس</option><option value="video">ویدئو</option></select></div>
+<div class="field"><label for="title">عنوان</label><input id="title" maxlength="120" placeholder="مثلاً برای یه روز ابری"></div>
+<div class="field"><label for="body">متن (اختیاری برای عکس/صدا/ویدئو)</label><textarea id="body" maxlength="10000" placeholder="چیزی که می‌خوای ثمین بخونه..."></textarea></div>
+<div class="field"><label for="file">فایل رسانه‌ای (اختیاری)</label><input id="file" type="file" accept="image/*,audio/*,video/*"></div>
+<p class="notice">برای شروع فایل‌های کوچک انتخاب کن. فایل‌ها در فضای ذخیره‌سازی خصوصی/عمومی پروژه ذخیره می‌شوند؛ تنظیمات دسترسی در راهنما آمده است.</p>
+<div class="actions"><button type="submit">انتشار یادگاری</button></div>
+</form><div id="editorStatus" class="status"></div>
+</section>
+<div class="foot">𓃠 ִֶָ𓈒🐈‍⬛ ࣪˖ ִֶָ☾<br>برای جوجه کوچولوم:)</div>
+</main>
+
+<script type="module">
+/*
+  SETUP: Replace these two placeholders with your Supabase project URL and anon/publishable key.
+  Never put a service_role key or other secret key in browser code.
+*/
+const SUPABASE_URL = "https://pdjybtxknspuwfrygvgf.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_cjEZ_Tq1m5PaUGHQMKSGxA_2X5a-NTP";
+const BUCKET = "samin-media";
+let supabase = null, currentFilter = "all", isAdmin = false, items = [];
+
+const $ = id => document.getElementById(id);
+
+const configured = SUPABASE_URL.startsWith("https://") && !SUPABASE_ANON_KEY.includes("PASTE_");
+if (configured) {
+  const { createClient } = await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm");
+  supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  $("setupNotice").classList.add("hidden");
+  await refreshSession();
+  await loadEntries();
+} else {
+  $("loadStatus").textContent = "برای فعال‌شدن سایت، آدرس پروژه و کلید عمومی Supabase را طبق README وارد کن.";
+}
+
+$("loginToggle").addEventListener("click", () => $("loginPanel").classList.toggle("hidden"));
+$("logoutBtn").addEventListener("click", async () => {
+  if (!supabase) return;
+  await supabase.auth.signOut(); isAdmin = false;
+  $("editorPanel").classList.add("hidden"); $("logoutBtn").classList.add("hidden");
+  $("authStatus").textContent = "از پنل خارج شدی."; 
+});
+$("loginForm").addEventListener("submit", async e => {
+  e.preventDefault(); if (!supabase) return;
+  $("authStatus").textContent = "در حال ورود...";
+  const {error} = await supabase.auth.signInWithPassword({email:$("email").value,password:$("password").value});
+  $("authStatus").textContent = error ? "ورود انجام نشد؛ ایمیل و رمز را بررسی کن." : "وارد شدی.";
+  if (!error) await refreshSession();
+});
+$("entryForm").addEventListener("submit", async e => {
+  e.preventDefault(); if (!supabase || !isAdmin) return;
+  const status = $("editorStatus"); status.textContent = "در حال انتشار...";
+  const kind = $("kind").value, title = $("title").value.trim() || "یه یادگاری کوچولو";
+  const body = $("body").value.trim(), file = $("file").files[0];
+  let media_url = null, media_type = null;
+  try {
+    if (file) {
+      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
+      const path = `${Date.now()}-${safeName}`;
+      const {error: uploadError} = await supabase.storage.from(BUCKET).upload(path,file,{upsert:false});
+      if (uploadError) throw uploadError;
+      const {data} = supabase.storage.from(BUCKET).getPublicUrl(path);
+      media_url = data.publicUrl; media_type = file.type;
+    }
+    const {error} = await supabase.from("samin_entries").insert({kind,title,body,media_url,media_type});
+    if (error) throw error;
+    status.textContent = "منتشر شد. ثمین می‌تونه با بازکردن سایت ببینتش. 🤍";
+    $("entryForm").reset(); await loadEntries();
+  } catch(err) {
+    status.textContent = "انتشار انجام نشد. تنظیمات پایگاه داده/فضای فایل و دسترسی‌ها را طبق README بررسی کن.";
+    console.error(err);
+  }
+});
+document.querySelectorAll("[data-filter]").forEach(btn => btn.addEventListener("click", () => {
+  document.querySelectorAll("[data-filter]").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active"); currentFilter=btn.dataset.filter; renderEntries();
+}));
+
+async function refreshSession() {
+  if (!supabase) return;
+  const {data} = await supabase.auth.getSession();
+  isAdmin = !!data.session;
+  $("editorPanel").classList.toggle("hidden",!isAdmin);
+  $("logoutBtn").classList.toggle("hidden",!isAdmin);
+  if (isAdmin) $("authStatus").textContent = "پنل مدیریت فعاله.";
+  supabase.auth.onAuthStateChange((_event, session) => {
+    isAdmin=!!session;
+    $("editorPanel").classList.toggle("hidden",!isAdmin);
+    $("logoutBtn").classList.toggle("hidden",!isAdmin);
+  });
+}
+async function loadEntries() {
+  if (!supabase) return;
+  $("loadStatus").textContent = "در حال دریافت یادگاری‌ها...";
+  const {data,error} = await supabase.from("samin_entries").select("*").order("created_at",{ascending:false});
+  if (error) { $("loadStatus").textContent = "محتوا بارگذاری نشد؛ تنظیمات جدول و دسترسی‌ها را بررسی کن."; return; }
+  items=data||[]; $("loadStatus").textContent = ""; renderEntries();
+}
+function renderEntries() {
+  const list=items.filter(x=>currentFilter==="all"||x.kind===currentFilter);
+  if (!list.length) { $("entries").innerHTML='<div class="empty">هنوز چیزی اینجا نیست. شاید اولین یادگاری رو تو اضافه کنی؟ ☾</div>'; return; }
+  $("entries").innerHTML="";
+  list.forEach(x=>{
+    const card=document.createElement("article"); card.className="entry";
+    const h=document.createElement("h3"); h.textContent=x.title||"یه یادگاری کوچولو"; card.append(h);
+    if(x.body){const p=document.createElement("p");p.textContent=x.body;card.append(p);}
+    if(x.media_url){
+      let media;
+      if(x.kind==="photo") {media=document.createElement("img");media.alt=x.title||"عکس";media.src=x.media_url;}
+      else if(x.kind==="audio"){media=document.createElement("audio");media.controls=true;media.src=x.media_url;}
+      else if(x.kind==="video"){media=document.createElement("video");media.controls=true;media.playsInline=true;media.src=x.media_url;}
+      else {media=document.createElement("a");media.href=x.media_url;media.textContent="بازکردن فایل";}
+      card.append(media);
+    }
+    const date=document.createElement("div");date.className="date";date.textContent=x.created_at?new Date(x.created_at).toLocaleDateString("fa-IR"):"";card.append(date);
+    $("entries").append(card);
+  });
+}
+</script>
+</body>
+</html>
